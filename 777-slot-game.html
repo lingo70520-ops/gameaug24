@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>777 幸運滾輪</title>
+<style>
+  :root{
+    --bg:#160b1f;
+    --bg2:#241236;
+    --gold:#f5c542;
+    --gold-dim:#8a6b1f;
+    --neon:#ff3d7f;
+    --neon2:#3dfff0;
+    --panel:#1f1130;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    height:100%;
+    margin:0;
+    background:
+      radial-gradient(circle at 50% 0%, #2b1642 0%, var(--bg) 60%);
+    font-family:'Trebuchet MS', 'Segoe UI', sans-serif;
+    color:#f4ecff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .cabinet{
+    position:relative;
+    width:420px;
+    max-width:94vw;
+    padding:28px 22px 24px;
+    border-radius:28px;
+    background:linear-gradient(160deg,#2c1746,#150a22 70%);
+    box-shadow:
+      0 0 0 3px var(--gold-dim),
+      0 0 0 6px #0e0616,
+      0 25px 60px -20px rgba(0,0,0,.8),
+      inset 0 0 40px rgba(245,197,66,.05);
+  }
+  .marquee{
+    text-align:center;
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:4px;
+    color:var(--gold);
+    text-shadow:
+      0 0 6px var(--gold),
+      0 0 18px rgba(245,197,66,.6);
+    margin-bottom:4px;
+  }
+  .sub{
+    text-align:center;
+    font-size:11px;
+    letter-spacing:3px;
+    color:var(--neon2);
+    opacity:.8;
+    margin-bottom:18px;
+  }
+  .bulbs{
+    display:flex;
+    justify-content:space-between;
+    padding:0 4px;
+    margin-bottom:14px;
+  }
+  .bulb{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 6px var(--gold);
+    animation:blink 1.4s infinite;
+  }
+  .bulb:nth-child(even){animation-delay:.7s;}
+  @keyframes blink{
+    0%,100%{opacity:1;}
+    50%{opacity:.15;}
+  }
+
+  .reel-window{
+    display:flex;
+    gap:10px;
+    background:#0c0616;
+    border-radius:16px;
+    padding:14px;
+    box-shadow:inset 0 8px 18px rgba(0,0,0,.7), inset 0 0 0 2px #3a2255;
+    margin-bottom:16px;
+  }
+  .reel{
+    flex:1;
+    height:96px;
+    background:linear-gradient(180deg,#0a0512,#150a22 40%,#0a0512);
+    border-radius:10px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:inset 0 0 10px rgba(0,0,0,.9);
+  }
+  .reel::before,.reel::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;height:26px;
+    z-index:2;
+    pointer-events:none;
+  }
+  .reel::before{top:0;background:linear-gradient(180deg,rgba(10,5,18,.95),transparent);}
+  .reel::after{bottom:0;background:linear-gradient(0deg,rgba(10,5,18,.95),transparent);}
+  .reel-strip{
+    position:absolute;
+    left:0;right:0;top:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    will-change:transform;
+  }
+  .sym{
+    height:96px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:46px;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));
+  }
+  .reel.spinning .reel-strip{
+    animation:spin-fall linear infinite;
+  }
+  @keyframes spin-fall{
+    from{transform:translateY(0);}
+    to{transform:translateY(960px);}
+  }
+  .win-glow .reel{
+    box-shadow:inset 0 0 10px rgba(0,0,0,.9), 0 0 18px 3px var(--gold);
+  }
+
+  .payline{
+    position:absolute;
+    left:14px;right:14px;
+    top:50%;
+    transform:translateY(-1px);
+    height:2px;
+    background:repeating-linear-gradient(90deg,var(--neon) 0 8px, transparent 8px 14px);
+    opacity:.7;
+    pointer-events:none;
+  }
+  .reel-window{position:relative;}
+
+  .status{
+    text-align:center;
+    min-height:26px;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:1px;
+    margin-bottom:14px;
+    color:var(--gold);
+    text-shadow:0 0 8px rgba(245,197,66,.5);
+    transition:opacity .2s;
+  }
+
+  .hud{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--panel);
+    border-radius:12px;
+    padding:10px 16px;
+    margin-bottom:16px;
+    box-shadow:inset 0 0 0 1px #3a2255;
+  }
+  .hud .block{text-align:center;}
+  .hud .label{font-size:10px;letter-spacing:2px;color:#a996c9;}
+  .hud .value{font-size:20px;font-weight:800;color:#fff;}
+  .hud .value.credits{color:var(--neon2);}
+  .bet-controls{display:flex;align-items:center;gap:6px;}
+  .bet-btn{
+    width:26px;height:26px;border-radius:50%;
+    border:none;
+    background:#3a2255;
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    line-height:1;
+  }
+  .bet-btn:hover{background:#4d2c73;}
+  .bet-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+  .spin-btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(180deg,#ff5f96,var(--neon) 60%,#c21a5c);
+    color:#fff;
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:3px;
+    cursor:pointer;
+    box-shadow:0 6px 0 #8f1246, 0 10px 20px rgba(255,61,127,.35);
+    transition:transform .05s, box-shadow .05s;
+  }
+  .spin-btn:active{
+    transform:translateY(4px);
+    box-shadow:0 2px 0 #8f1246, 0 4px 10px rgba(255,61,127,.35);
+  }
+  .spin-btn:disabled{
+    background:linear-gradient(180deg,#5b5b6b,#3a3a46);
+    box-shadow:0 6px 0 #23232c;
+    cursor:not-allowed;
+  }
+
+  .footer-note{
+    text-align:center;
+    font-size:10px;
+    color:#6d5c8c;
+    margin-top:12px;
+    letter-spacing:1px;
+  }
+
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-6px);}
+    40%{transform:translateX(6px);}
+    60%{transform:translateX(-4px);}
+    80%{transform:translateX(4px);}
+  }
+  .cabinet.jackpot{animation:shake .4s ease;}
+
+  @media (prefers-reduced-motion: reduce){
+    .reel.spinning .reel-strip{animation:none;}
+    .bulb{animation:none;}
+    .cabinet.jackpot{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cabinet" id="cabinet">
+  <div class="marquee">777 幸運滾輪</div>
+  <div class="sub">LUCKY SEVEN SLOTS · 純娛樂 · 非真錢賭博</div>
+
+  <div class="bulbs" id="bulbs"></div>
+
+  <div class="reel-window">
+    <div class="payline"></div>
+    <div class="reel" id="reel0"><div class="reel-strip" id="strip0"></div></div>
+    <div class="reel" id="reel1"><div class="reel-strip" id="strip1"></div></div>
+    <div class="reel" id="reel2"><div class="reel-strip" id="strip2"></div></div>
+  </div>
+
+  <div class="status" id="status">準備好了嗎？拉下拉桿試試手氣！</div>
+
+  <div class="hud">
+    <div class="block">
+      <div class="label">籌碼 CREDITS</div>
+      <div class="value credits" id="credits">100</div>
+    </div>
+    <div class="block">
+      <div class="label">下注 BET</div>
+      <div class="bet-controls">
+        <button class="bet-btn" id="betMinus">－</button>
+        <div class="value" id="betValue">5</div>
+        <button class="bet-btn" id="betPlus">＋</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="spin-btn" id="spinBtn">SPIN 拉霸</button>
+  <div class="footer-note">虛擬籌碼僅供遊戲娛樂，不具任何現金價值</div>
+</div>
+
+<script>
+(function(){
+  // symbols: weight controls rarity (higher weight = more common)
+  const SYMBOLS = [
+    { key:'cherry', icon:'🍒', weight:30 },
+    { key:'lemon',  icon:'🍋', weight:26 },
+    { key:'bell',   icon:'🔔', weight:18 },
+    { key:'star',   icon:'⭐', weight:12 },
+    { key:'gem',    icon:'💎', weight:8  },
+    { key:'seven',  icon:'7️⃣', weight:6  },
+  ];
+
+  const PAYOUTS = {
+    cherry: 2,
+    lemon: 3,
+    bell: 5,
+    star: 8,
+    gem: 15,
+    seven: 50, // triple 7️⃣ jackpot
+  };
+
+  const REEL_COUNT = 3;
+  const VISIBLE_ROWS = 1;
+  const SYM_HEIGHT = 96;
+  const STRIP_REPEATS = 10; // long strip so the spin animation has room to loop
+
+  let credits = 100;
+  let bet = 5;
+  const MIN_BET = 5;
+  const MAX_BET = 50;
+  const BET_STEP = 5;
+
+  const els = {
+    credits: document.getElementById('credits'),
+    betValue: document.getElementById('betValue'),
+    betMinus: document.getElementById('betMinus'),
+    betPlus: document.getElementById('betPlus'),
+    spinBtn: document.getElementById('spinBtn'),
+    status: document.getElementById('status'),
+    cabinet: document.getElementById('cabinet'),
+    reelWindow: document.querySelector('.reel-window'),
+  };
+
+  function weightedPool(){
+    const pool = [];
+    SYMBOLS.forEach(s => { for(let i=0;i<s.weight;i++) pool.push(s); });
+    return pool;
+  }
+  const POOL = weightedPool();
+
+  function randomSymbol(){
+    return POOL[Math.floor(Math.random()*POOL.length)];
+  }
+
+  function buildStrip(container, finalSymbol){
+    container.innerHTML = '';
+    // build a long strip of random symbols, ending with the final symbol
+    const list = [];
+    for(let i=0;i<STRIP_REPEATS;i++) list.push(randomSymbol());
+    list.push(finalSymbol);
+    list.forEach(sym => {
+      const div = document.createElement('div');
+      div.className = 'sym';
+      div.textContent = sym.icon;
+      container.appendChild(div);
+    });
+    return list.length;
+  }
+
+  function updateHUD(){
+    els.credits.textContent = credits;
+    els.betValue.textContent = bet;
+    els.betMinus.disabled = bet <= MIN_BET;
+    els.betPlus.disabled = bet >= MAX_BET || bet + BET_STEP > credits;
+    els.spinBtn.disabled = credits < bet;
+  }
+
+  els.betMinus.addEventListener('click', () => {
+    if(bet > MIN_BET){ bet -= BET_STEP; updateHUD(); }
+  });
+  els.betPlus.addEventListener('click', () => {
+    if(bet < MAX_BET && bet + BET_STEP <= credits){ bet += BET_STEP; updateHUD(); }
+  });
+
+  function setStatus(text, color){
+    els.status.textContent = text;
+    els.status.style.color = color || '';
+  }
+
+  let spinning = false;
+
+  function spin(){
+    if(spinning || credits < bet) return;
+    spinning = true;
+    credits -= bet;
+    updateHUD();
+    els.spinBtn.disabled = true;
+    els.reelWindow.classList.remove('win-glow');
+    setStatus('滾動中...', '#3dfff0');
+
+    const finals = [randomSymbol(), randomSymbol(), randomSymbol()];
+    const reelEls = [document.getElementById('reel0'), document.getElementById('reel1'), document.getElementById('reel2')];
+    const stripEls = [document.getElementById('strip0'), document.getElementById('strip1'), document.getElementById('strip2')];
+
+    stripEls.forEach((strip, i) => {
+      buildStrip(strip, finals[i]);
+      strip.style.transform = 'translateY(0)';
+      reelEls[i].classList.add('spinning');
+    });
+
+    const stopDelays = [900, 1300, 1750];
+    let stopped = 0;
+
+    stopDelays.forEach((delay, i) => {
+      setTimeout(() => {
+        const strip = stripEls[i];
+        const reel = reelEls[i];
+        reel.classList.remove('spinning');
+        const finalIndex = strip.children.length - 1;
+        strip.style.transition = 'transform .35s cubic-bezier(.2,.9,.3,1)';
+        strip.style.transform = `translateY(-${finalIndex * SYM_HEIGHT}px)`;
+        stopped++;
+        if(stopped === REEL_COUNT){
+          setTimeout(() => resolveSpin(finals), 380);
+        }
+      }, delay);
+    });
+  }
+
+  function resolveSpin(finals){
+    spinning = false;
+    const [a,b,c] = finals;
+    let win = 0;
+    let msg = '再接再厲，再拉一次！';
+    let color = '#f4ecff';
+
+    if(a.key === b.key && b.key === c.key){
+      const mult = PAYOUTS[a.key];
+      win = bet * mult;
+      credits += win;
+      if(a.key === 'seven'){
+        msg = `🎉 777 大獎！贏得 ${win} 籌碼！`;
+        color = '#f5c542';
+        els.cabinet.classList.add('jackpot');
+        setTimeout(()=>els.cabinet.classList.remove('jackpot'), 400);
+      } else {
+        msg = `恭喜連線！贏得 ${win} 籌碼`;
+        color = '#f5c542';
+      }
+      els.reelWindow.classList.add('win-glow');
+    } else if(a.key === b.key || b.key === c.key || a.key === c.key){
+      msg = '差一點就中了，再試一次！';
+      color = '#3dfff0';
+    }
+
+    setStatus(msg, color);
+    updateHUD();
+
+    if(credits < MIN_BET){
+      setTimeout(() => {
+        setStatus('籌碼用完了，重新開始遊戲！', '#ff3d7f');
+        credits = 100;
+        bet = MIN_BET;
+        updateHUD();
+      }, 1400);
+    }
+  }
+
+  els.spinBtn.addEventListener('click', spin);
+
+  // decorative marquee bulbs
+  const bulbsWrap = document.getElementById('bulbs');
+  for(let i=0;i<14;i++){
+    const b = document.createElement('div');
+    b.className = 'bulb';
+    bulbsWrap.appendChild(b);
+  }
+
+  // initial static reels (show a resting frame before first spin)
+  ['strip0','strip1','strip2'].forEach(id => {
+    const el = document.getElementById(id);
+    const sym = randomSymbol();
+    const div = document.createElement('div');
+    div.className = 'sym';
+    div.textContent = sym.icon;
+    el.appendChild(div);
+  });
+
+  updateHUD();
+})();
+</script>
+
+</body>
+</html>
