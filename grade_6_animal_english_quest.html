@@ -29,7 +29,7 @@
 
   <div class="w-full max-w-2xl bg-white rounded-3xl shadow-xl shadow-amber-200/40 border-2 border-amber-200/80 p-5 sm:p-8 flex flex-col gap-5 relative overflow-hidden">
 
-    <div id="toast-message" class="hidden absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg transition-all z-50 flex items-center gap-2">
+    <div id="toast-message" class="hidden fixed sm:absolute top-4 left-1/2 -translate-x-1/2 w-[92%] sm:w-auto max-w-md bg-slate-900/95 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-2xl sm:rounded-full shadow-2xl transition-all z-50 text-center flex items-center justify-center gap-2 border border-slate-700/80">
       <span id="toast-text">通知訊息</span>
     </div>
 
@@ -260,20 +260,115 @@
     let currentIndex = 0;
     let userAnswers = new Array(questions.length).fill(null);
     let isHintVisible = false;
+    let toastTimer = null;
 
-    function showToast(message) {
+    // 檢查瀏覽器是否具備 Web Speech 語音合成支援
+    function isSpeechSupported() {
+      try {
+        return (
+          typeof window !== "undefined" &&
+          "speechSynthesis" in window &&
+          "SpeechSynthesisUtterance" in window &&
+          window.speechSynthesis !== null &&
+          window.speechSynthesis !== undefined
+        );
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // 彈出提示訊息
+    function showToast(message, duration = 3000) {
       const toast = document.getElementById("toast-message");
       const toastText = document.getElementById("toast-text");
+      if (!toast || !toastText) return;
+
+      if (toastTimer) {
+        clearTimeout(toastTimer);
+        toastTimer = null;
+      }
+
       toastText.innerText = message;
       toast.classList.remove("hidden");
-      setTimeout(() => {
+      toastTimer = setTimeout(() => {
         toast.classList.add("hidden");
-      }, 2500);
+      }, duration);
+    }
+
+    // 手機 Safari / Chrome 解鎖音訊語音引擎 (使用者手勢首次觸發)
+    let speechUnlocked = false;
+    function unlockMobileSpeech() {
+      if (speechUnlocked) return;
+      if (isSpeechSupported()) {
+        try {
+          // 在 iOS / Android 上觸發 resume 與空語音以解除自動播放限制
+          window.speechSynthesis.resume();
+          const dummy = new SpeechSynthesisUtterance("");
+          dummy.volume = 0;
+          dummy.rate = 1.0;
+          window.speechSynthesis.speak(dummy);
+          speechUnlocked = true;
+        } catch (e) {
+          // 忽略解鎖異常
+        }
+      }
+    }
+
+    document.addEventListener("touchstart", unlockMobileSpeech, { once: true, passive: true });
+    document.addEventListener("click", unlockMobileSpeech, { once: true, passive: true });
+
+    // 智慧挑選好聽、自然的美式英語女聲
+    function getPreferredFemaleVoice() {
+      if (!isSpeechSupported()) return null;
+      try {
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices || voices.length === 0) return null;
+
+        const preferredNames = [
+          "Google US English",
+          "Samantha",
+          "Ava",
+          "Victoria",
+          "Karen",
+          "Microsoft Jenny Online (Natural)",
+          "Microsoft Aria Online (Natural)",
+          "Microsoft Zira",
+          "Zira"
+        ];
+
+        for (const name of preferredNames) {
+          const found = voices.find(v => v.name && v.name.includes(name));
+          if (found) return found;
+        }
+
+        const femaleEn = voices.find(v =>
+          v.lang && (v.lang.startsWith("en") || v.lang.replace("_", "-").startsWith("en-US")) &&
+          v.name && v.name.toLowerCase().includes("female")
+        );
+        if (femaleEn) return femaleEn;
+
+        const enUsVoice = voices.find(v => v.lang === "en-US" || v.lang === "en_US");
+        if (enUsVoice) return enUsVoice;
+
+        return voices.find(v => v.lang && v.lang.startsWith("en")) || null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // 監聽語音庫就緒事件 (Android Chrome 非同步載入)
+    if (isSpeechSupported()) {
+      try {
+        window.speechSynthesis.onvoiceschanged = () => {
+          getPreferredFemaleVoice();
+        };
+      } catch (e) {}
     }
 
     function renderQuestion() {
       const q = questions[currentIndex];
-      
+      if (!q) return;
+
       // Update counter and progress bar
       document.getElementById("question-counter").innerText = `第 ${currentIndex + 1} / ${questions.length} 題`;
       const progressPercent = ((currentIndex + 1) / questions.length) * 100;
@@ -305,13 +400,13 @@
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = `flex items-start gap-3 p-3.5 sm:p-4 rounded-xl border-2 text-left text-sm sm:text-base font-bold transition-all active:scale-[0.98] ${
-          isSelected 
-            ? "border-amber-500 bg-amber-100/90 text-amber-950 font-black shadow-sm" 
+          isSelected
+            ? "border-amber-500 bg-amber-100/90 text-amber-950 font-black shadow-sm"
             : "border-amber-200/90 bg-white hover:border-amber-400 hover:bg-amber-50/60 text-slate-800"
         }`;
 
-        const badgeClass = isSelected 
-          ? "bg-amber-600 text-white font-black" 
+        const badgeClass = isSelected
+          ? "bg-amber-600 text-white font-black"
           : "bg-amber-100 text-amber-900 font-black";
 
         btn.innerHTML = `
@@ -343,96 +438,91 @@
       speakCurrentQuestion(0.95);
     }
 
-    // 智能挑選好聽、自然的美式英語女聲
-    function getPreferredFemaleVoice() {
-      if (!('speechSynthesis' in window)) return null;
-      const voices = window.speechSynthesis.getVoices();
-      if (!voices || voices.length === 0) return null;
-
-      // 優先挑選自然度高、發音清晰的美式女聲音色
-      const preferredNames = [
-        "Google US English",           // Chrome 經典溫和女聲
-        "Samantha",                    // Apple / iOS 經典自然美語女聲
-        "Ava",                         // Apple 高音質神經女聲
-        "Victoria",                    // Apple 溫雅女聲
-        "Microsoft Jenny Online (Natural)", // Edge / Windows 頂級自然女聲
-        "Microsoft Aria Online (Natural)",  // Edge / Windows 頂級自然女聲
-        "Microsoft Zira",              // Windows 內建女聲
-        "Zira"
-      ];
-
-      // 1. 先比對最推薦的高音質女聲清單
-      for (const name of preferredNames) {
-        const found = voices.find(v => v.name.includes(name));
-        if (found) return found;
-      }
-
-      // 2. 次選：包含 female 關鍵字的美式英文 (en-US / en)
-      const femaleEn = voices.find(v => 
-        (v.lang.startsWith("en") || v.lang.replace('_', '-').startsWith("en-US")) && 
-        v.name.toLowerCase().includes("female")
-      );
-      if (femaleEn) return femaleEn;
-
-      // 3. 次選：en-US 標準發音
-      const enUsVoice = voices.find(v => v.lang === "en-US" || v.lang === "en_US");
-      if (enUsVoice) return enUsVoice;
-
-      // 4. 備選：任何英語語音
-      return voices.find(v => v.lang.startsWith("en")) || voices[0];
-    }
-
-    // 確保語音庫非同步載入時也能及時就緒
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = () => {
-        getPreferredFemaleVoice();
-      };
-    }
-
+    // 播放題目語音朗讀
     function speakCurrentQuestion(rate = 0.95) {
-      if (!('speechSynthesis' in window)) {
-        showToast("⚠️ 您的瀏覽器暫不支援語音朗讀功能");
+      if (!isSpeechSupported()) {
+        showToast("目前瀏覽器不支援語音朗讀，請直接閱讀英文題目作答。");
+        if (!isHintVisible) {
+          isHintVisible = true;
+          renderQuestion();
+        }
         return;
       }
+
       try {
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(questions[currentIndex].question);
+
+        const currentQ = questions[currentIndex];
+        if (!currentQ || !currentQ.question) return;
+
+        const utterance = new SpeechSynthesisUtterance(currentQ.question);
         utterance.lang = "en-US";
         utterance.rate = rate;
-        utterance.pitch = 1.05; // 稍微調高音調，讓女聲聽起來更有朝氣、溫柔親切
-        
+        utterance.pitch = 1.05;
+
         const voice = getPreferredFemaleVoice();
         if (voice) {
           utterance.voice = voice;
         }
 
+        utterance.onerror = (event) => {
+          console.warn("語音播放通知:", event);
+          // 若非手動取消的異常，提示使用者看文字作答，不中斷遊戲
+          if (event && event.error && event.error !== "canceled" && event.error !== "interrupted") {
+            showToast("目前瀏覽器不支援語音朗讀，請直接閱讀英文題目作答。");
+            if (!isHintVisible) {
+              isHintVisible = true;
+              renderQuestion();
+            }
+          }
+        };
+
         window.speechSynthesis.speak(utterance);
       } catch (err) {
-        console.error("Speech Synthesis Error:", err);
+        console.warn("Speech Synthesis Exception:", err);
+        showToast("目前瀏覽器不支援語音朗讀，請直接閱讀英文題目作答。");
+        if (!isHintVisible) {
+          isHintVisible = true;
+          renderQuestion();
+        }
       }
     }
 
+    // 選擇選項
     function selectOption(index) {
       userAnswers[currentIndex] = index;
       renderQuestion();
 
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const randomPraise = praises[Math.floor(Math.random() * praises.length)];
-        const utterance = new SpeechSynthesisUtterance(randomPraise);
-        utterance.lang = "en-US";
-        utterance.rate = 1.0;
-        utterance.pitch = 1.1; // 讚美音效提高音頻，更加活潑愉悅
-        
-        const voice = getPreferredFemaleVoice();
-        if (voice) {
-          utterance.voice = voice;
-        }
+      if (isSpeechSupported()) {
+        try {
+          if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+          }
+          window.speechSynthesis.cancel();
+          const randomPraise = praises[Math.floor(Math.random() * praises.length)];
+          const utterance = new SpeechSynthesisUtterance(randomPraise);
+          utterance.lang = "en-US";
+          utterance.rate = 1.0;
+          utterance.pitch = 1.1;
 
-        window.speechSynthesis.speak(utterance);
+          const voice = getPreferredFemaleVoice();
+          if (voice) {
+            utterance.voice = voice;
+          }
+          utterance.onerror = (e) => {
+            console.warn("Praise speech error:", e);
+          };
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          console.warn("Praise speech exception:", e);
+        }
       }
     }
 
+    // 切換題目
     function navigateQuestion(index) {
       if (index >= questions.length) {
         showCompletionScreen();
@@ -441,34 +531,49 @@
       if (index < 0) return;
 
       currentIndex = index;
-      isHintVisible = false; // Reset to hide text on new question for pure listening
+      isHintVisible = false; // 新題目預設讓學生純聽力，若無語音可自動或手動開啟
       renderQuestion();
 
-      setTimeout(() => {
+      // 在點擊手勢事件中直接觸發朗讀，符合 iOS / Android 安全播放機制
+      if (isSpeechSupported()) {
         speakCurrentQuestion(0.95);
-      }, 250);
+      } else {
+        isHintVisible = true;
+        renderQuestion();
+      }
     }
 
+    // 顯示結算完成畫面
     function showCompletionScreen() {
       document.getElementById("quiz-view").classList.add("hidden");
       const compView = document.getElementById("completion-view");
       compView.classList.remove("hidden");
       compView.classList.add("flex");
 
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance("Congratulations! You completed all ten questions! Excellent work!");
-        utterance.lang = "en-US";
-        utterance.rate = 0.95;
-        utterance.pitch = 1.05;
-        const voice = getPreferredFemaleVoice();
-        if (voice) {
-          utterance.voice = voice;
+      if (isSpeechSupported()) {
+        try {
+          if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+          }
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(
+            "Congratulations! You completed all ten questions! Excellent work!"
+          );
+          utterance.lang = "en-US";
+          utterance.rate = 0.95;
+          utterance.pitch = 1.05;
+          const voice = getPreferredFemaleVoice();
+          if (voice) {
+            utterance.voice = voice;
+          }
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          console.warn("Completion speech exception:", e);
         }
-        window.speechSynthesis.speak(utterance);
       }
     }
 
+    // 重新開始
     function restartQuiz() {
       currentIndex = 0;
       userAnswers.fill(null);
@@ -479,11 +584,22 @@
       document.getElementById("quiz-view").classList.remove("hidden");
 
       renderQuestion();
-      speakCurrentQuestion(0.95);
+      if (isSpeechSupported()) {
+        speakCurrentQuestion(0.95);
+      } else {
+        isHintVisible = true;
+        renderQuestion();
+      }
     }
 
+    // 初始化頁面載入
     window.addEventListener("DOMContentLoaded", () => {
       renderQuestion();
+      if (!isSpeechSupported()) {
+        isHintVisible = true;
+        renderQuestion();
+        showToast("目前瀏覽器不支援語音朗讀，請直接閱讀英文題目作答。");
+      }
     });
   </script>
 </body>
