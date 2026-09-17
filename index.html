@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&family=Outfit:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-primary: #090d16;
@@ -95,9 +98,17 @@
         }
 
         @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(40px, 60px) scale(1.08); }
-            100% { transform: translate(-30px, -40px) scale(0.95); }
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(40px, 60px) scale(1.08);
+            }
+
+            100% {
+                transform: translate(-30px, -40px) scale(0.95);
+            }
         }
 
         .grid-pattern {
@@ -106,7 +117,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: 
+            background-image:
                 linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -161,8 +172,17 @@
         }
 
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); transform: scale(1); }
-            50% { box-shadow: 0 0 25px rgba(236, 72, 153, 0.7); transform: scale(1.03); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(236, 72, 153, 0.7);
+                transform: scale(1.03);
+            }
         }
 
         .brand-text {
@@ -248,8 +268,15 @@
         }
 
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
         }
 
         .hero-title {
@@ -408,16 +435,16 @@
             flex-direction: column;
             position: relative;
             backdrop-filter: blur(20px);
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
-                        border-color 0.35s ease, 
-                        box-shadow 0.35s ease;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
         }
 
         .game-card:hover {
             transform: translateY(-8px);
             border-color: var(--card-hover-border);
             box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
-                        0 0 30px rgba(99, 102, 241, 0.2);
+                0 0 30px rgba(99, 102, 241, 0.2);
         }
 
         /* Card Visual / Thumbnail Banner */
@@ -436,7 +463,7 @@
             inset: 0;
             opacity: 0.25;
             background-size: 24px 24px;
-            background-image: 
+            background-image:
                 radial-gradient(circle, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
         }
 
@@ -511,7 +538,11 @@
         .theme-slot {
             background: linear-gradient(135deg, #2e0854 0%, #150a22 100%);
         }
-        .theme-slot .banner-glow { background: #f59e0b; }
+
+        .theme-slot .banner-glow {
+            background: #f59e0b;
+        }
+
         .theme-slot .badge-category {
             background: rgba(245, 158, 11, 0.2);
             color: #fbbf24;
@@ -521,7 +552,11 @@
         .theme-math {
             background: linear-gradient(135deg, #064e3b 0%, #06282d 100%);
         }
-        .theme-math .banner-glow { background: #10b981; }
+
+        .theme-math .banner-glow {
+            background: #10b981;
+        }
+
         .theme-math .badge-category {
             background: rgba(16, 185, 129, 0.2);
             color: #6ee7b7;
@@ -531,11 +566,29 @@
         .theme-finance {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
         }
-        .theme-finance .banner-glow { background: #6366f1; }
+
+        .theme-finance .banner-glow {
+            background: #6366f1;
+        }
+
         .theme-finance .badge-category {
             background: rgba(99, 102, 241, 0.2);
             color: #a5b4fc;
             border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .theme-quest {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 60%, #9a3412 100%);
+        }
+
+        .theme-quest .banner-glow {
+            background: #f97316;
+        }
+
+        .theme-quest .badge-category {
+            background: rgba(249, 115, 22, 0.2);
+            color: #fdba74;
+            border-color: rgba(249, 115, 22, 0.4);
         }
 
         /* Card Content Body */
@@ -789,19 +842,24 @@
                 padding: 1.5rem 1rem 3rem;
                 gap: 2rem;
             }
+
             .cards-grid {
                 grid-template-columns: 1fr;
             }
+
             .controls-bar {
                 flex-direction: column;
                 align-items: stretch;
             }
+
             .search-box {
                 max-width: 100%;
             }
+
             .card-banner {
                 height: 170px;
             }
+
             .modal-content {
                 height: 95vh;
                 border-radius: var(--radius-md);
@@ -809,6 +867,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Ambient Background Effects -->
@@ -820,7 +879,7 @@
     <div class="grid-pattern"></div>
 
     <div class="wrapper">
-        
+
         <!-- Navigation Header -->
         <header class="nav-header">
             <a href="index.html" class="brand-logo" title="回到作品集首頁">
@@ -841,21 +900,21 @@
         <section class="hero">
             <div class="hero-pill">
                 <span class="dot"></span>
-                <span>3 款精選前端互動 Web 專案</span>
+                <span>4 款精選前端互動 Web 專案</span>
             </div>
-            
+
             <h1 class="hero-title">
                 AI 小遊戲作品集<span class="gradient-text">AUG 24</span>
             </h1>
-            
+
             <p class="hero-desc">
-                探索以純前端 HTML5、CSS 與 JavaScript 打造的多元互動世界。從刺激經典的霓虹拉霸機、限時加法挑戰遊戲，到專業的金融現金流視覺化解析工具，即點即玩！
+                探索以純前端 HTML5、CSS 與 JavaScript 打造的多元互動世界。從刺激經典的霓虹拉霸機、限時加法挑戰、國小六年級動物英語聽力冒險，到專業的金融數據視覺化解析工具，即點即玩！
             </p>
 
             <!-- Stats Bar -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value">3</div>
+                    <div class="stat-value">4</div>
                     <div class="stat-label">🎮 互動作品總數</div>
                 </div>
                 <div class="stat-card">
@@ -872,15 +931,18 @@
         <!-- Controls: Filter and Search -->
         <div class="controls-bar">
             <div class="filter-group" id="filterGroup">
-                <button class="filter-btn active" data-filter="all" onclick="filterGames('all', this)">全部作品 (3)</button>
+                <button class="filter-btn active" data-filter="all" onclick="filterGames('all', this)">全部作品 (4)</button>
                 <button class="filter-btn" data-filter="casino" onclick="filterGames('casino', this)">🎰 休閒娛樂</button>
                 <button class="filter-btn" data-filter="puzzle" onclick="filterGames('puzzle', this)">🎁 益智挑戰</button>
-                <button class="filter-btn" data-filter="finance" onclick="filterGames('finance', this)">📊 數據視覺化</button>
+                <button class="filter-btn" data-filter="education" onclick="filterGames('education', this)">🦉 英語學習</button>
+                <button class="filter-btn" data-filter="finance" onclick="filterGames('finance', this)">📊
+                    數據視覺化</button>
             </div>
 
             <div class="search-box">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
                 <input type="text" id="searchInput" placeholder="搜尋遊戲名稱或特色..." oninput="searchGames(this.value)">
             </div>
@@ -918,14 +980,18 @@
                         <a href="777-slot-game.html" class="btn-launch" onclick="playClickSound()">
                             <span>開啟遊戲</span>
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
                         </a>
                         <button class="btn-preview" onclick="openPreview('777-slot-game.html', '777 幸運拉霸輪盤')">
                             <span>即時試玩</span>
                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
                         </button>
                     </div>
@@ -961,14 +1027,19 @@
                         <a href="math_addition_gift_game.html" class="btn-launch" onclick="playClickSound()">
                             <span>開啟遊戲</span>
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
                         </a>
-                        <button class="btn-preview" onclick="openPreview('math_addition_gift_game.html', '45秒數學加法解鎖禮物大挑戰')">
+                        <button class="btn-preview"
+                            onclick="openPreview('math_addition_gift_game.html', '45秒數學加法解鎖禮物大挑戰')">
                             <span>即時試玩</span>
                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
                         </button>
                     </div>
@@ -976,7 +1047,8 @@
             </article>
 
             <!-- Card 3: SinoPac FinLens 永豐金財務視覺化 (2890 graph.html) -->
-            <article class="game-card" data-category="finance" data-keywords="永豐金 2890 財務 現金流量表 ECharts 報表 視覺化 Excel 銀行 金融">
+            <article class="game-card" data-category="finance"
+                data-keywords="永豐金 2890 財務 現金流量表 ECharts 報表 視覺化 Excel 銀行 金融">
                 <div class="card-banner theme-finance">
                     <div class="banner-pattern"></div>
                     <div class="banner-glow"></div>
@@ -1004,14 +1076,68 @@
                         <a href="2890 graph.html" class="btn-launch" onclick="playClickSound()">
                             <span>開啟遊戲</span>
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
                         </a>
-                        <button class="btn-preview" onclick="openPreview('2890 graph.html', 'SinoPac FinLens - 永豐金財務視覺化分析')">
+                        <button class="btn-preview"
+                            onclick="openPreview('2890 graph.html', 'SinoPac FinLens - 永豐金財務視覺化分析')">
                             <span>即時試玩</span>
                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Card 4: Grade 6 Animal English Quest (grade_6_animal_english_quest.html) -->
+            <article class="game-card" data-category="education"
+                data-keywords="Grade 6 Animal English Quest 國小 六年級 動物 英文 聽力 冒險 貓頭鷹 語音 speech 學習 測驗">
+                <div class="card-banner theme-quest">
+                    <div class="banner-pattern"></div>
+                    <div class="banner-glow"></div>
+                    <div class="card-badges">
+                        <span class="badge-category">🦉 英語學習</span>
+                        <span class="badge-pill-tech">Web Speech API / Tailwind</span>
+                    </div>
+                    <div class="banner-icon-wrapper">🦉</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-header-info">
+                        <span class="game-subtitle">國小六年級動物英語聽力冒險</span>
+                        <h2 class="game-title">Grade 6 Animal English Quest</h2>
+                    </div>
+                    <p class="game-desc">
+                        結合生動動物角色的英語聽力互動挑戰！支援 Web Speech 原生語音雙速朗讀（正常/慢速）、動物點擊互動音效、即時答題解析與結算金牌獎章。
+                    </p>
+                    <div class="features-list">
+                        <span class="feature-tag">🎧 雙速語音朗讀</span>
+                        <span class="feature-tag">🦉 10款生動動物</span>
+                        <span class="feature-tag">🎯 聽力選擇挑戰</span>
+                        <span class="feature-tag">🏆 榮譽金牌結算</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="grade_6_animal_english_quest.html" class="btn-launch" onclick="playClickSound()">
+                            <span>開啟遊戲</span>
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </a>
+                        <button class="btn-preview"
+                            onclick="openPreview('grade_6_animal_english_quest.html', 'Grade 6 Animal English Quest - 六年級動物英語聽力大冒險')">
+                            <span>即時試玩</span>
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
                         </button>
                     </div>
@@ -1052,7 +1178,8 @@
                     <a id="modalExternalLink" href="#" target="_blank" class="modal-btn" title="在新分頁開啟完整版">
                         <span>獨立分頁開啟</span>
                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                         </svg>
                     </a>
                     <button class="modal-btn close-btn" onclick="closePreview()" title="關閉預覽">
@@ -1123,7 +1250,7 @@
         function filterGames(category, btnElement) {
             playClickSound(520, 0.05);
             currentFilter = category;
-            
+
             // Update active button
             document.querySelectorAll('#filterGroup .filter-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -1149,11 +1276,11 @@
                 const keywords = card.getAttribute('data-keywords').toLowerCase();
                 const title = card.querySelector('.game-title').textContent.toLowerCase();
                 const desc = card.querySelector('.game-desc').textContent.toLowerCase();
-                
+
                 const matchesCategory = (currentFilter === 'all' || category === currentFilter);
-                const matchesSearch = !currentSearch || 
-                    title.includes(currentSearch) || 
-                    desc.includes(currentSearch) || 
+                const matchesSearch = !currentSearch ||
+                    title.includes(currentSearch) ||
+                    desc.includes(currentSearch) ||
                     keywords.includes(currentSearch);
 
                 if (matchesCategory && matchesSearch) {
@@ -1230,4 +1357,5 @@
         });
     </script>
 </body>
+
 </html>
